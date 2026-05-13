@@ -635,6 +635,7 @@ function openM(id){document.getElementById(id).classList.add(‘on’)}
 function closeM(id){document.getElementById(id).classList.remove(‘on’)}
 document.querySelectorAll(’[data-close]’).forEach(b=>b.addEventListener(‘click’,()=>closeM(b.dataset.close)));
 document.querySelectorAll(’.overlay’).forEach(ov=>ov.addEventListener(‘click’,e=>{if(e.target===ov)closeM(ov.id);}));
+document.title='JS OK';
 </script>
 
 </body>
