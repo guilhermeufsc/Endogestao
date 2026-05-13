@@ -415,7 +415,7 @@ function renderClinicaSelector(pt){
 
 function renderMatSel(){
   const el=document.getElementById('mat-selector');
-  const cats=[...new Set(MATS.map(m=>m.cat))];
+  const cats=Array.from(new Set(MATS.map(m=>m.cat)));
   el.innerHTML=cats.map(cat=>{
     const items=materiais.filter(m=>m.cat===cat);
     return`<div class="sec-label">${cat}</div><div class="mat-grid">${items.map(m=>{const q=selMats[m.id]||0;return`<button class="mat-btn${q>0?' sel':''}" data-id="${m.id}">${q>0?`<span class="mat-qty">${q}</span>`:''}<div class="mat-btn-name">${m.nome}</div><div class="mat-btn-sub">${fmt(cpu(m))}/uso</div></button>`;}).join('')}</div>`;
@@ -596,7 +596,7 @@ closeM(‘modal-qty’);renderMatSel();
 
 // MAT DB
 function renderMatDB(){
-const cats=[…new Set(materiais.map(m=>m.cat))];
+const cats=Array.from(new Set(materiais.map(m=>m.cat)));
 document.getElementById(‘mat-db-list’).innerHTML=cats.map(cat=>{
 const items=materiais.filter(m=>m.cat===cat);
 return`<div class="sec-label">${cat}</div>${items.map(m=>`<div class="mat-db-item"><div class="mat-db-left"><div class="mat-db-name">${m.nome}</div><div class="mat-db-meta">${m.usos} uso(s)/unid · Custo/uso: <strong>${fmt(cpu(m))}</strong> · ${m.obs}</div></div><div><label style="font-size:.58rem;margin-bottom:2px;text-align:right;display:block">R$/unid</label><input class="price-input" type="number" step="0.01" min="0" value="${m.preco.toFixed(2)}" data-id="${m.id}"></div></div>`).join('')}`;
@@ -612,7 +612,7 @@ let tp=pacientes.length,tc=0,tcu=0;
 pacientes.forEach(p=>(p.procedimentos||[]).forEach(pr=>{tc++;tcu+=pr.custo||0;}));
 document.getElementById(‘stats-grid’).innerHTML=`<div class="stat-card"><div class="stat-val">${tp}</div><div class="stat-lbl">Pacientes</div></div><div class="stat-card"><div class="stat-val">${tc}</div><div class="stat-lbl">Atendimentos</div></div><div class="stat-card"><div class="stat-val" style="font-size:1.1rem">${fmt(tcu)}</div><div class="stat-lbl">Custo Total</div></div><div class="stat-card"><div class="stat-val" style="font-size:1.1rem">${tc?fmt(tcu/tc):'R$ 0,00'}</div><div class="stat-lbl">Custo Médio</div></div>`;
 let all=[];
-pacientes.forEach(p=>(p.procedimentos||[]).forEach(pr=>all.push({…pr,ptNome:p.nome})));
+pacientes.forEach(p=>(p.procedimentos||[]).forEach(pr=>all.push(Object.assign({},pr,{ptNome:p.nome}))));
 all.sort((a,b)=>b.data.localeCompare(a.data));
 document.getElementById(‘recent-procs’).innerHTML=all.slice(0,10).map(pr=>`<div class="proc-card"><div class="proc-hd"><div><div style="font-weight:600;font-size:.82rem">${pr.ptNome}</div><div class="proc-date">🦷 Dente ${pr.dente||'—'} · ${fmtD(pr.data)}</div></div><div class="proc-cost">${fmt(pr.custo||0)}</div></div>${pr.nota?`<div class="proc-note" style="margin-top:4px">${pr.nota}</div>`:''}</div>`).join(’’)||’<div class="empty-state"><div class="ei">📊</div><p>Nenhum atendimento ainda</p></div>’;
 }
