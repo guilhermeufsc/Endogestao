@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#6376b4">
+<title>EndoGestão</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0e0e10;--ink2:#2a2a30;--ink3:#4a4a58;--ink4:#7a7a90;--white:#ffffff;--paper:#f7f7fa;--paper2:#ededf4;--lilac:#8fa0c8;--lilac2:#b4c2dc;--lilac3:#d8dff0;--lilac4:#eef0f8;--accent:#6376b4;--accent2:#4a5a96;--green:#2d7a4f;--green-l:#e0f0e8;--red:#a03030;--red-l:#f5e8e8;--r:0px;--sh:3px 3px 0 rgba(99,118,180,.18);--sh2:5px 5px 0 rgba(99,118,180,.28);--border:1.5px solid var(--ink)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'IBM Plex Sans',sans-serif;background:var(--paper);color:var(--ink);min-height:100vh;max-width:480px;margin:0 auto;padding-bottom:84px;-webkit-font-smoothing:antialiased;font-size:14px;background-image:linear-gradient(rgba(99,118,180,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(99,118,180,.05) 1px,transparent 1px);background-size:28px 28px}
+.hdr{background:var(--ink);color:var(--white);padding:44px 18px 0 18px;position:sticky;top:0;z-index:100;border-bottom:4px solid var(--accent)}
+.hdr-row{display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:14px}
+.app-name{font-family:'Bebas Neue',sans-serif;font-size:2.1rem;letter-spacing:4px;line-height:1;color:var(--white)}
+.app-name em{font-style:normal;color:var(--lilac2)}
+.app-sub{font-family:'IBM Plex Mono',monospace;font-size:.55rem;letter-spacing:3px;color:var(--lilac);margin-top:2px;text-transform:uppercase}
+.hdr-actions{display:flex;gap:6px;align-items:center}
+.icon-btn{background:transparent;border:1.5px solid var(--lilac);color:var(--lilac2);width:34px;height:34px;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .12s}
+.icon-btn:hover{background:var(--accent);border-color:var(--accent);color:var(--white)}
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--ink);border-top:3px solid var(--accent);display:flex;z-index:200}
+.nb{flex:1;padding:10px 2px 14px;border:none;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--ink4);font-family:'IBM Plex Mono',monospace;font-size:.48rem;font-weight:400;letter-spacing:1px;text-transform:uppercase;border-right:1px solid var(--ink2);transition:all .12s;position:relative}
+.nb:last-child{border-right:none}
+.nb.on{color:var(--lilac2)}
+.nb.on::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent)}
+.ni{font-size:1.1rem;line-height:1}
+.scr{display:none;padding:16px;animation:fi .15s ease}
+.scr.on{display:block}
+@keyframes fi{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.card{background:var(--white);border:var(--border);box-shadow:var(--sh);padding:16px;margin-bottom:12px}
+.card-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding-bottom:10px;border-bottom:1.5px solid var(--ink)}
+.ct{font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:.8rem;letter-spacing:1px;text-transform:uppercase}
+.btn{border:var(--border);padding:11px 16px;font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:.75rem;letter-spacing:1px;text-transform:uppercase;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:all .1s;border-radius:0;box-shadow:2px 2px 0 var(--ink2)}
+.btn:active{box-shadow:none;transform:translate(2px,2px)}
+.bp{background:var(--ink);color:var(--white);border-color:var(--ink)}
+.bt{background:var(--accent);color:var(--white);border-color:var(--accent2);box-shadow:2px 2px 0 var(--accent2)}
+.bg{background:var(--green);color:var(--white);border-color:#1d5535;box-shadow:2px 2px 0 #1d5535}
+.bdr{background:var(--white);color:var(--red);border:1.5px solid var(--red);box-shadow:2px 2px 0 var(--red-l)}
+.bgh{background:var(--paper2);color:var(--ink2);border-color:var(--lilac2);box-shadow:2px 2px 0 var(--lilac3)}
+.bind{background:var(--accent2);color:var(--white);border-color:var(--ink);box-shadow:2px 2px 0 var(--ink)}
+.bfw{width:100%;justify-content:center}
+.bsm{padding:6px 12px;font-size:.68rem}
+input,textarea,select{width:100%;border:1.5px solid var(--ink2);padding:10px 13px;font-family:'IBM Plex Sans',sans-serif;font-size:.88rem;color:var(--ink);background:var(--white);outline:none;transition:border .12s;border-radius:0;box-shadow:2px 2px 0 var(--lilac3)}
+input:focus,textarea:focus,select:focus{border-color:var(--accent);box-shadow:2px 2px 0 var(--lilac2)}
+textarea{resize:vertical;min-height:80px}
+label{font-family:'IBM Plex Mono',monospace;font-size:.65rem;font-weight:500;color:var(--ink3);letter-spacing:.5px;text-transform:uppercase;display:block;margin-bottom:5px}
+.fg{margin-bottom:13px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.list-item{display:flex;align-items:center;gap:12px;padding:13px 14px;background:var(--white);border:var(--border);box-shadow:var(--sh);margin-bottom:8px;cursor:pointer;transition:box-shadow .1s}
+.list-item:active{box-shadow:none;transform:translate(2px,2px)}
+.list-av{width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:1.1rem;flex-shrink:0;border:1.5px solid var(--ink)}
+.av-blue{background:var(--ink);color:var(--lilac2)}
+.av-indigo{background:var(--accent);color:var(--white)}
+.list-info{flex:1;min-width:0}
+.list-name{font-weight:600;font-size:.88rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.list-meta{font-family:'IBM Plex Mono',monospace;font-size:.6rem;color:var(--ink4);margin-top:3px;letter-spacing:.3px}
+.empty-state{text-align:center;padding:40px 20px;color:var(--ink4)}
+.empty-state .ei{font-size:2rem;margin-bottom:10px}
+.empty-state p{font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.5px;line-height:1.7}
+.overlay{position:fixed;inset:0;background:rgba(14,14,16,.7);z-index:300;display:none;align-items:flex-end;justify-content:center}
+.overlay.on{display:flex}
+.modal{background:var(--white);border-top:4px solid var(--accent);border-left:var(--border);border-right:var(--border);width:100%;max-width:480px;max-height:92vh;overflow-y:auto;padding:20px 18px 36px;animation:su .22s ease}
+@keyframes su{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;padding-bottom:12px;border-bottom:2px solid var(--ink)}
+.modal-title{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:3px;color:var(--ink)}
+.close-btn{background:var(--paper2);border:1.5px solid var(--ink2);width:28px;height:28px;cursor:pointer;color:var(--ink2);display:flex;align-items:center;justify-content:center;font-size:.8rem;border-radius:0}
+.tabs{display:flex;background:var(--paper2);border:var(--border);margin-bottom:16px;gap:0}
+.tab{flex:1;border:none;background:none;border-right:1.5px solid var(--ink2);padding:9px 4px;font-family:'IBM Plex Mono',monospace;font-size:.6rem;font-weight:500;cursor:pointer;color:var(--ink4);letter-spacing:.5px;text-transform:uppercase;transition:all .12s;white-space:nowrap}
+.tab:last-child{border-right:none}
+.tab.on{background:var(--ink);color:var(--lilac2)}
+.sec-label{font-family:'IBM Plex Mono',monospace;font-size:.6rem;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--accent2);margin:16px 0 8px;padding-left:8px;border-left:3px solid var(--accent);position:relative}
+.proc-card{border:var(--border);padding:13px;margin-bottom:9px;background:var(--white);box-shadow:var(--sh)}
+.proc-hd{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
+.proc-date{font-family:'IBM Plex Mono',monospace;font-size:.62rem;color:var(--ink4);letter-spacing:.3px}
+.proc-cost{font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:.85rem;color:var(--green)}
+.proc-note{font-size:.8rem;color:var(--ink2);margin-bottom:8px;line-height:1.55}
+.proc-tags{display:flex;flex-wrap:wrap;gap:4px}
+.tag{background:var(--lilac4);color:var(--accent2);border:1px solid var(--lilac2);padding:2px 7px;font-family:'IBM Plex Mono',monospace;font-size:.58rem;font-weight:500;letter-spacing:.3px}
+.mat-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.mat-btn{border:1.5px solid var(--ink2);padding:9px 10px;background:var(--white);cursor:pointer;text-align:left;transition:all .1s;position:relative;width:100%;box-shadow:1px 1px 0 var(--lilac3)}
+.mat-btn:active{box-shadow:none;transform:translate(1px,1px)}
+.mat-btn.sel{border-color:var(--accent);background:var(--lilac4);box-shadow:2px 2px 0 var(--accent)}
+.mat-btn-name{font-family:'IBM Plex Sans',sans-serif;font-size:.72rem;font-weight:500;color:var(--ink);line-height:1.3}
+.mat-btn-sub{font-family:'IBM Plex Mono',monospace;font-size:.56rem;color:var(--ink4);margin-top:3px}
+.mat-qty{position:absolute;top:4px;right:5px;background:var(--accent);color:var(--white);width:16px;height:16px;font-family:'IBM Plex Mono',monospace;font-size:.6rem;font-weight:500;display:flex;align-items:center;justify-content:center}
+.cost-box{background:var(--ink);border:var(--border);padding:16px;margin-bottom:14px;box-shadow:4px 4px 0 var(--accent);position:relative;overflow:hidden}
+.cost-box::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:var(--accent)}
+.cost-label{font-family:'IBM Plex Mono',monospace;font-size:.58rem;color:var(--lilac);letter-spacing:2px;text-transform:uppercase;padding-left:8px}
+.cost-val{font-family:'Bebas Neue',sans-serif;font-size:2.4rem;line-height:1;color:var(--white);letter-spacing:2px;padding-left:8px;margin-top:4px}
+.cost-items{margin-top:12px;display:flex;flex-direction:column;gap:0}
+.cost-item{display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:.65rem;padding:5px 8px;border-top:1px solid rgba(255,255,255,.08)}
+.cost-item-name{color:var(--lilac2)}
+.cost-item-val{color:var(--white);font-weight:500}
+.photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}
+.photo-thumb{position:relative;aspect-ratio:1;overflow:hidden;background:var(--paper2);border:1.5px solid var(--ink2)}
+.photo-thumb img{width:100%;height:100%;object-fit:cover}
+.photo-del{position:absolute;top:3px;right:3px;background:var(--ink);color:var(--white);border:none;width:20px;height:20px;font-size:.65rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.photo-label{font-family:'IBM Plex Mono',monospace;font-size:.55rem;color:var(--ink4);text-align:center;margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.photo-type-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
+.ptype-btn{border:1.5px solid var(--ink2);padding:5px 10px;font-family:'IBM Plex Mono',monospace;font-size:.62rem;letter-spacing:.5px;cursor:pointer;background:var(--white);color:var(--ink2);transition:all .1s}
+.ptype-btn.on{background:var(--ink);color:var(--lilac2);border-color:var(--ink)}
+.mat-db-item{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--paper2)}
+.mat-db-item:last-child{border-bottom:none}
+.mat-db-left{flex:1;min-width:0;margin-right:8px}
+.mat-db-name{font-size:.82rem;font-weight:500;color:var(--ink)}
+.mat-db-meta{font-family:'IBM Plex Mono',monospace;font-size:.58rem;color:var(--ink4);margin-top:3px}
+.price-input{width:82px;text-align:right;font-size:.82rem;padding:6px 9px}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.stat-card{background:var(--white);border:var(--border);box-shadow:var(--sh);padding:14px}
+.stat-val{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--accent2);letter-spacing:1px}
+.stat-lbl{font-family:'IBM Plex Mono',monospace;font-size:.58rem;color:var(--ink4);margin-top:2px;letter-spacing:.5px;text-transform:uppercase}
+.qty-row{display:flex;align-items:center;gap:14px;justify-content:center;margin:18px 0}
+.qty-btn{background:var(--paper2);border:var(--border);width:36px;height:36px;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:0}
+.qty-btn:active{background:var(--ink);color:var(--white)}
+.qty-val{font-family:'Bebas Neue',sans-serif;font-size:2rem;min-width:36px;text-align:center;letter-spacing:2px}
+.search-box{position:relative;margin-bottom:12px}
+.search-box input{padding-left:36px}
+.search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--ink4);font-size:.9rem}
+.clinic-select-box{border:var(--border);overflow:hidden}
+.clinic-opt{display:flex;align-items:center;gap:10px;padding:10px 13px;cursor:pointer;border-bottom:1px solid var(--paper2);transition:background .1s}
+.clinic-opt:last-child{border-bottom:none}
+.clinic-opt.sel{background:var(--lilac4);border-left:3px solid var(--accent)}
+.clinic-opt input[type=radio]{accent-color:var(--accent);width:15px;height:15px;flex-shrink:0}
+.clinic-opt-info{flex:1}
+.clinic-opt-name{font-size:.85rem;font-weight:500}
+.clinic-opt-sub{font-family:'IBM Plex Mono',monospace;font-size:.6rem;color:var(--ink4);margin-top:2px}
+.div{height:1.5px;background:var(--ink2);margin:14px 0}
+@media print{body>*:not(#rel-overlay){display:none!important}#rel-overlay{position:static!important;overflow:visible!important;z-index:auto!important}#rel-overlay>div:first-child{display:none!important}*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:var(--lilac2)}::-webkit-scrollbar-track{background:var(--paper2)}
+</style>
+</head>
+<body>
+<header class="hdr">
+  <div class="hdr-row">
+    <div><div class="app-name">Endo<em>Gestão</em></div><div class="app-sub">Gestão Endodôntica</div></div>
+    <div class="hdr-actions">
+      <button class="icon-btn" id="btn-search-pt">🔍</button>
+      <button class="icon-btn" id="btn-add-pt">＋</button>
+    </div>
+  </div>
+</header>
+<nav class="nav">
+  <button class="nb on" data-scr="s-pac"><span class="ni">👤</span>Pacientes</button>
+  <button class="nb" data-scr="s-clinicas"><span class="ni">🏥</span>Clínicas</button>
+  <button class="nb" data-scr="s-mat"><span class="ni">🧪</span>Materiais</button>
+  <button class="nb" data-scr="s-rel"><span class="ni">📊</span>Relatório</button>
+</nav>
+<section class="scr on" id="s-pac">
+  <div class="search-box" id="search-box" style="display:none"><span class="search-icon">🔍</span><input type="text" id="pt-search" placeholder="Buscar paciente..."></div>
+  <div id="pt-list"></div>
+</section>
+<section class="scr" id="s-clinicas">
+  <div style="display:flex;justify-content:flex-end;margin-bottom:12px"><button class="btn bp bsm" id="btn-add-clinica">＋ Nova Clínica</button></div>
+  <div id="clinica-list"></div>
+</section>
+<section class="scr" id="s-mat">
+  <div class="card"><div class="card-hd"><span class="ct">📦 Banco de Materiais</span></div><p style="font-size:.76rem;color:var(--ink4);margin-bottom:12px">Edite o preço de compra. O custo por uso é recalculado automaticamente.</p><div id="mat-db-list"></div></div>
+</section>
+<section class="scr" id="s-rel">
+  <div class="stat-grid" id="stats-grid"></div>
+  <div class="card"><div class="card-hd"><span class="ct">📈 Atendimentos Recentes</span></div><div id="recent-procs"></div></div>
+</section>
+
+<div class="overlay" id="modal-npt"><div class="modal">
+  <div class="modal-hd"><span class="modal-title">Novo Paciente</span><button class="close-btn" data-close="modal-npt">✕</button></div>
+  <div class="fg"><label>Nome *</label><input id="np-nome" type="text" placeholder="Ex: João Silva"></div>
+  <div class="row2"><div class="fg"><label>Nascimento</label><input id="np-nasc" type="date"></div><div class="fg"><label>Telefone</label><input id="np-tel" type="tel" placeholder="(00) 00000-0000"></div></div>
+  <div class="fg"><label>Observações</label><textarea id="np-obs" placeholder="Alergias, condições sistêmicas..."></textarea></div>
+  <button class="btn bp bfw" id="btn-salvar-pt">💾 Salvar Paciente</button>
+</div></div>
+
+<div class="overlay" id="modal-nclinica"><div class="modal">
+  <div class="modal-hd"><span class="modal-title">Nova Clínica</span><button class="close-btn" data-close="modal-nclinica">✕</button></div>
+  <div class="fg"><label>Nome *</label><input id="nc-nome" type="text" placeholder="Ex: Clínica Sorriso"></div>
+  <div class="fg"><label>Responsável</label><input id="nc-resp" type="text" placeholder="Dr(a). Nome"></div>
+  <div class="fg"><label>Endereço</label><input id="nc-end" type="text" placeholder="Rua, número, bairro"></div>
+  <div class="row2"><div class="fg"><label>Telefone</label><input id="nc-tel" type="tel" placeholder="(00) 00000-0000"></div><div class="fg"><label>Cidade</label><input id="nc-cidade" type="text" placeholder="São Paulo"></div></div>
+  <div class="fg"><label>Observações</label><textarea id="nc-obs" placeholder="Informações adicionais..."></textarea></div>
+  <button class="btn bp bfw" id="btn-salvar-clinica">💾 Salvar Clínica</button>
+</div></div>
+
+<div class="overlay" id="modal-pront"><div class="modal">
+  <div class="modal-hd"><span class="modal-title" id="pront-nome">Prontuário</span><button class="close-btn" data-close="modal-pront">✕</button></div>
+  <div class="tabs">
+    <button class="tab on" data-tab="t-hist">📋 Histórico</button>
+    <button class="tab" data-tab="t-proc">➕ Atend.</button>
+    <button class="tab" data-tab="t-fotos">📷 Rx</button>
+    <button class="tab" data-tab="t-dados">👤 Dados</button>
+  </div>
+  <div id="t-hist"><div id="proc-list"></div></div>
+  <div id="t-proc" style="display:none">
+    <div class="sec-label">Clínica / Consultório</div>
+    <div id="clinica-selector" class="clinic-select-box" style="margin-bottom:14px"></div>
+    <div class="row2"><div class="fg"><label>Data</label><input id="proc-data" type="date"></div><div class="fg"><label>Dente</label><input id="proc-dente" type="text" placeholder="Ex: 36"></div></div>
+    <div class="fg"><label>Número de canais</label><input id="proc-canais" type="number" min="1" max="6" placeholder="Ex: 3"></div>
+    <div class="fg"><label>Anotações clínicas</label><textarea id="proc-nota" placeholder="Diagnóstico, conduta, intercorrências..."></textarea></div>
+    <div class="sec-label">Materiais Utilizados</div>
+    <div id="mat-selector"></div>
+    <div id="cost-preview" style="display:none;margin-bottom:14px"><div class="cost-box"><div class="cost-label">Custo Total dos Materiais</div><div class="cost-val" id="cp-total">R$ 0,00</div><div class="cost-items" id="cp-items"></div></div></div>
+    <button class="btn bp bfw" id="btn-salvar-proc">💾 Registrar Atendimento</button>
+  </div>
+  <div id="t-fotos" style="display:none">
+    <p style="font-size:.78rem;color:var(--ink4);margin-bottom:12px">Adicione radiografias de pré e pós-operatório.</p>
+    <div class="sec-label">Tipo da imagem</div>
+    <div class="photo-type-row">
+      <button class="ptype-btn on" data-type="Pré-operatório">Pré-op</button>
+      <button class="ptype-btn" data-type="Trans-operatório">Trans-op</button>
+      <button class="ptype-btn" data-type="Pós-operatório">Pós-op</button>
+      <button class="ptype-btn" data-type="Outro">Outro</button>
+    </div>
+    <input type="file" id="foto-input" accept="image/*" multiple style="display:none">
+    <button class="btn bt bfw" id="btn-add-foto" style="margin-bottom:14px">📷 Adicionar Radiografia</button>
+    <div class="photo-grid" id="photo-grid"></div>
+  </div>
+  <div id="t-dados" style="display:none">
+    <div id="dados-pt-view"></div>
+    <div class="div"></div>
+    <button class="btn bind bfw" id="btn-gerar-pdf" style="margin-bottom:10px">📄 Gerar Relatório PDF</button>
+    <button class="btn bdr bfw" id="btn-del-pt">🗑️ Excluir Paciente</button>
+  </div>
+</div></div>
+
+<div class="overlay" id="modal-qty"><div class="modal" style="padding-bottom:24px">
+  <div class="modal-hd"><span class="modal-title" id="qty-nome">Material</span><button class="close-btn" data-close="modal-qty">✕</button></div>
+  <p style="font-size:.75rem;color:var(--ink4);margin-bottom:4px" id="qty-info"></p>
+  <div class="qty-row"><button class="qty-btn" id="qty-dec">−</button><span class="qty-val" id="qty-disp">1</span><button class="qty-btn" id="qty-inc">+</button></div>
+  <button class="btn bt bfw" id="btn-confirm-qty">✓ Confirmar</button>
+</div></div>
+
+<div class="overlay" id="modal-ident"><div class="modal">
+  <div class="modal-hd"><span class="modal-title">Identificação</span><button class="close-btn" data-close="modal-ident">✕</button></div>
+  <p style="font-size:.76rem;color:var(--ink4);margin-bottom:14px">Aparece no rodapé do relatório PDF.</p>
+  <div class="fg"><label>Nome / CRO</label><input id="id-nome" type="text" placeholder="Dr(a). Seu Nome — CRO/XX 000000"></div>
+  <div class="fg"><label>Especialidade</label><input id="id-esp" type="text" placeholder="Especialista em Endodontia"></div>
+  <div class="fg"><label>Telefone</label><input id="id-tel" type="tel" placeholder="(00) 00000-0000"></div>
+  <div class="fg"><label>E-mail</label><input id="id-email" type="email" placeholder="seu@email.com"></div>
+  <button class="btn bp bfw" id="btn-salvar-ident">💾 Salvar</button>
+</div></div>
+
+<script>
+const MATS=[
+  {id:'b1011',nome:'Broca Diamantada 1011 HN',cat:'Brocas',preco:8.50,usos:10,obs:'Acesso coronário'},
+  {id:'b1012',nome:'Broca Diamantada 1012 HN',cat:'Brocas',preco:8.50,usos:10,obs:'Acesso coronário'},
+  {id:'b1014',nome:'Broca Diamantada 1014 HN',cat:'Brocas',preco:8.50,usos:10,obs:'Acesso coronário'},
+  {id:'b1016',nome:'Broca Diamantada 1016 HN',cat:'Brocas',preco:8.50,usos:10,obs:'Acesso coronário'},
+  {id:'besf',nome:'Broca Esférica Baixa Rotação',cat:'Brocas',preco:6.00,usos:8,obs:'Remoção cárie/acesso'},
+  {id:'agc',nome:'Agulha Anestésica Curta',cat:'Anestesia',preco:0.35,usos:1,obs:'Uso único'},
+  {id:'agl',nome:'Agulha Anestésica Longa',cat:'Anestesia',preco:0.40,usos:1,obs:'Uso único'},
+  {id:'tub',nome:'Tubete Articaína 4%',cat:'Anestesia',preco:4.50,usos:1,obs:'1,8ml — uso único'},
+  {id:'lenc',nome:'Lençol de Borracha',cat:'Isolamento',preco:1.20,usos:1,obs:'Uso único'},
+  {id:'lep2508',nome:'Lima EASY Pro Design #25.08',cat:'Limas Rotatórias',preco:130.00,usos:60,obs:'Pct 4un × 15 canais/lima'},
+  {id:'ll1505',nome:'Lima Easy Logic #15.05',cat:'Limas Rotatórias',preco:130.00,usos:60,obs:'Pct 4un × 15 canais/lima'},
+  {id:'ll1503',nome:'Lima Easy Logic #15.03',cat:'Limas Rotatórias',preco:130.00,usos:60,obs:'Pct 4un × 15 canais/lima'},
+  {id:'ll2503',nome:'Lima Easy Logic #25.03',cat:'Limas Rotatórias',preco:130.00,usos:60,obs:'Pct 4un × 15 canais/lima'},
+  {id:'ll2504',nome:'Lima Easy Logic #25.04',cat:'Limas Rotatórias',preco:130.00,usos:60,obs:'Pct 4un × 15 canais/lima'},
+  {id:'ll2505',nome:'Lima Easy Logic #25.05',cat:'Limas Rotatórias',preco:130.00,usos:60,obs:'Pct 4un × 15 canais/lima'},
+  {id:'lph35',nome:'Lima Phantom #35.04',cat:'Limas Rotatórias',preco:130.00,usos:60,obs:'Pct 4un × 15 canais/lima'},
+  {id:'lvdw35',nome:'Lima VDW #35.04',cat:'Limas Rotatórias',preco:130.00,usos:60,obs:'Pct 4un × 15 canais/lima'},
+  {id:'ll4005',nome:'Lima Easy Logic #40.05',cat:'Limas Rotatórias',preco:130.00,usos:60,obs:'Pct 4un × 15 canais/lima'},
+  {id:'ll4505',nome:'Lima Easy Logic #45.05',cat:'Limas Rotatórias',preco:130.00,usos:60,obs:'Pct 4un × 15 canais/lima'},
+  {id:'ls4004',nome:'Lima Solla #40.04',cat:'Limas Rotatórias',preco:130.00,usos:60,obs:'Pct 4un × 15 canais/lima'},
+  {id:'ls5004',nome:'Lima Solla #50.04',cat:'Limas Rotatórias',preco:130.00,usos:60,obs:'Pct 4un × 15 canais/lima'},
+  {id:'ls6003',nome:'Lima Solla #60.03',cat:'Limas Rotatórias',preco:130.00,usos:60,obs:'Pct 4un × 15 canais/lima'},
+  {id:'ls7003',nome:'Lima Solla #70.03',cat:'Limas Rotatórias',preco:130.00,usos:60,obs:'Pct 4un × 15 canais/lima'},
+  {id:'lcp06',nome:'Lima C-Pilot #06',cat:'Limas Manuais',preco:4.50,usos:15,obs:'~15 canais/unidade'},
+  {id:'lcp08',nome:'Lima C-Pilot #08',cat:'Limas Manuais',preco:4.50,usos:15,obs:'~15 canais/unidade'},
+  {id:'lcp10',nome:'Lima C-Pilot #10',cat:'Limas Manuais',preco:4.50,usos:15,obs:'~15 canais/unidade'},
+  {id:'lfx15',nome:'Lima Flexofile #15',cat:'Limas Manuais',preco:5.50,usos:15,obs:'~15 canais/unidade'},
+  {id:'edta',nome:'Solução EDTA 4ml',cat:'Irrigantes',preco:2.80,usos:1,obs:'Dose por procedimento'},
+  {id:'clgel',nome:'Clorexidina Gel 2% 3ml',cat:'Irrigantes',preco:3.50,usos:1,obs:'Dose por procedimento'},
+  {id:'cp6',nome:'Cones de Papel (6 un)',cat:'Obturação',preco:1.80,usos:1,obs:'6 unidades/pct'},
+  {id:'cgpp',nome:'Cone Guta Percha Principal',cat:'Obturação',preco:0.80,usos:1,obs:'1 por canal'},
+  {id:'cgpa',nome:'Cones Guta Percha Acessórios',cat:'Obturação',preco:1.50,usos:1,obs:'Vários por canal'},
+  {id:'ahp',nome:'Cimento AH Plus',cat:'Cimentos',preco:3.50,usos:1,obs:'Dentsply — padrão ouro'},
+  {id:'s26',nome:'Cimento Sealer 26',cat:'Cimentos',preco:3.00,usos:1,obs:'Dentsply — hidróxido Ca'},
+  {id:'esp',nome:'Cimento Endosealer Plus',cat:'Cimentos',preco:3.20,usos:1,obs:'Maquira'},
+  {id:'atac',nome:'Ataque Ácido 37%',cat:'Restauração',preco:25.00,usos:150,obs:'~150 usos/kit 3 seringas'},
+  {id:'ades',nome:'Adesivo',cat:'Restauração',preco:45.00,usos:80,obs:'~80 aplicações/frasco 5ml'},
+  {id:'rfl',nome:'Resina Flow Azul',cat:'Restauração',preco:28.00,usos:30,obs:'~30 usos/seringa 2g'},
+  {id:'res',nome:'Resina Composta',cat:'Restauração',preco:35.00,usos:20,obs:'~20 rest. Cl.I/seringa 4g'},
+  {id:'mbef',nome:'Microbrush Extra Fino',cat:'Restauração',preco:27.50,usos:100,obs:'Cx 100un — uso único'},
+  {id:'mbf',nome:'Microbrush Fino',cat:'Restauração',preco:27.50,usos:100,obs:'Cx 100un — uso único'},
+  {id:'soro',nome:'Soro Fisiológico 100ml',cat:'Restauração',preco:3.50,usos:1,obs:'1 frasco por paciente'},
+];
+
+function ld(k){try{return JSON.parse(localStorage.getItem(k))||null}catch{return null}}
+function sv(k,v){localStorage.setItem(k,JSON.stringify(v))}
+function fmt(v){return'R$ '+v.toFixed(2).replace('.',',')}
+function today(){return new Date().toISOString().split('T')[0]}
+function fmtD(d){if(!d)return'';const[y,m,dd]=d.split('-');return`${dd}/${m}/${y}`}
+function ini(n){return n.trim().split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase()}
+function cpu(m){return m.preco/m.usos}
+function uid(){return '_'+Math.random().toString(36).substr(2,9)}
+
+let pacientes=ld('eg_pac')||[];
+let clinicas=ld('eg_cli')||[];
+let materiais=ld('eg_mat')||JSON.parse(JSON.stringify(MATS));
+let identidade=ld('eg_ident')||{nome:'',esp:'Especialista em Endodontia',tel:'',email:''};
+MATS.forEach(mb=>{if(!materiais.find(m=>m.id===mb.id))materiais.push({...mb});});
+sv('eg_mat',materiais);
+
+let curPt=null,selMats={},qtyTarget=null,photoType='Pré-operatório';
+function gm(id){return materiais.find(m=>m.id===id)}
+function gc(id){return clinicas.find(c=>c.id===id)}
+
+// NAV
+document.querySelectorAll('.nb').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('.nb').forEach(x=>x.classList.remove('on'));
+    document.querySelectorAll('.scr').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on');document.getElementById(b.dataset.scr).classList.add('on');
+    if(b.dataset.scr==='s-clinicas')renderClinList();
+    if(b.dataset.scr==='s-mat')renderMatDB();
+    if(b.dataset.scr==='s-rel')renderRel();
+  });
+});
+
+// PACIENTES
+function renderPts(f=''){
+  const el=document.getElementById('pt-list');
+  const pts=pacientes.filter(p=>p.nome.toLowerCase().includes(f.toLowerCase()));
+  if(!pts.length){el.innerHTML=`<div class="empty-state"><div class="ei">🦷</div><p>${f?'Nenhum encontrado':'Nenhum paciente ainda.<br>Toque em + para adicionar.'}</p></div>`;return;}
+  el.innerHTML=pts.map(p=>{
+    const prs=p.procedimentos||[];
+    const ult=prs.length?fmtD(prs[prs.length-1].data):'Sem atendimentos';
+    const clin=prs.length&&prs[prs.length-1].clinicaId?gc(prs[prs.length-1].clinicaId):null;
+    return`<div class="list-item" data-id="${p.id}"><div class="list-av av-blue">${ini(p.nome)}</div><div class="list-info"><div class="list-name">${p.nome}</div><div class="list-meta">Último: ${ult}${clin?' · '+clin.nome:''} · ${prs.length} atend. · ${(p.fotos||[]).length} rx</div></div><span style="color:var(--ink4)">›</span></div>`;
+  }).join('');
+  el.querySelectorAll('.list-item').forEach(el=>el.addEventListener('click',()=>openPront(el.dataset.id)));
+}
+renderPts();
+
+document.getElementById('btn-search-pt').addEventListener('click',()=>{
+  const b=document.getElementById('search-box');
+  b.style.display=b.style.display==='none'?'block':'none';
+  if(b.style.display==='block')document.getElementById('pt-search').focus();
+});
+document.getElementById('pt-search').addEventListener('input',e=>renderPts(e.target.value));
+
+const idBtn=document.createElement('button');
+idBtn.className='icon-btn';idBtn.textContent='⚙️';idBtn.title='Minha identificação';
+idBtn.addEventListener('click',openIdent);
+document.querySelector('.hdr-actions').prepend(idBtn);
+
+// NOVO PACIENTE
+document.getElementById('btn-add-pt').addEventListener('click',()=>openM('modal-npt'));
+document.getElementById('btn-salvar-pt').addEventListener('click',()=>{
+  const nome=document.getElementById('np-nome').value.trim();
+  if(!nome){showToast('Informe o nome do paciente');return;}
+  const pt={id:uid(),nome,nasc:document.getElementById('np-nasc').value,tel:document.getElementById('np-tel').value,obs:document.getElementById('np-obs').value,procedimentos:[],fotos:[]};
+  pacientes.push(pt);sv('eg_pac',pacientes);
+  closeM('modal-npt');
+  ['np-nome','np-nasc','np-tel','np-obs'].forEach(id=>document.getElementById(id).value='');
+  renderPts();openPront(pt.id);
+});
+
+// CLÍNICAS
+function renderClinList(){
+  const el=document.getElementById('clinica-list');
+  if(!clinicas.length){el.innerHTML='<div class="empty-state"><div class="ei">🏥</div><p>Nenhuma clínica cadastrada.<br>Toque em + para adicionar.</p></div>';return;}
+  el.innerHTML=clinicas.map(c=>`<div class="list-item"><div class="list-av av-indigo">🏥</div><div class="list-info"><div class="list-name">${c.nome}</div><div class="list-meta">${c.resp?c.resp+' · ':''}${c.cidade||''}</div></div><button class="btn bdr bsm" data-del="${c.id}" style="flex-shrink:0">🗑️</button></div>`).join('');
+  el.querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',e=>{
+    e.stopPropagation();
+    const id=b.dataset.del;
+    clinicas=clinicas.filter(x=>x.id!==id);sv('eg_cli',clinicas);renderClinList();
+  }));
+}
+
+document.getElementById('btn-add-clinica').addEventListener('click',()=>openM('modal-nclinica'));
+document.getElementById('btn-salvar-clinica').addEventListener('click',()=>{
+  const nome=document.getElementById('nc-nome').value.trim();
+  if(!nome){showToast('Informe o nome da clínica');return;}
+  const c={id:uid(),nome,resp:document.getElementById('nc-resp').value,end:document.getElementById('nc-end').value,tel:document.getElementById('nc-tel').value,cidade:document.getElementById('nc-cidade').value,obs:document.getElementById('nc-obs').value};
+  clinicas.push(c);sv('eg_cli',clinicas);
+  closeM('modal-nclinica');
+  ['nc-nome','nc-resp','nc-end','nc-tel','nc-cidade','nc-obs'].forEach(id=>document.getElementById(id).value='');
+  renderClinList();
+});
+
+// PRONTUÁRIO
+function openPront(ptId){
+  curPt=ptId;selMats={};
+  const pt=pacientes.find(p=>p.id===ptId);
+  document.getElementById('pront-nome').textContent=pt.nome;
+  document.getElementById('proc-data').value=today();
+  document.getElementById('proc-canais').value='';
+  document.getElementById('proc-dente').value='';
+  document.getElementById('proc-nota').value='';
+  renderHist(pt);renderMatSel();renderClinicaSelector(pt);renderDados(pt);renderFotos(pt);
+  showTab('t-hist');openM('modal-pront');
+}
+
+function renderHist(pt){
+  const prs=(pt.procedimentos||[]).slice().reverse();
+  const el=document.getElementById('proc-list');
+  if(!prs.length){el.innerHTML='<div class="empty-state"><div class="ei">📋</div><p>Nenhum atendimento registrado</p></div>';return;}
+  el.innerHTML=prs.map(pr=>{
+    const clin=pr.clinicaId?gc(pr.clinicaId):null;
+    const tags=(pr.mats||[]).map(m=>{const mat=gm(m.id);return`<span class="tag">${mat?mat.nome.split(' ').slice(0,3).join(' '):m.id}${m.qty>1?' ×'+m.qty:''}</span>`;}).join('');
+    return`<div class="proc-card"><div class="proc-hd"><div><div style="font-weight:600;font-size:.84rem">🦷 Dente ${pr.dente||'—'} · ${pr.canais||'?'} canal(is)</div><div class="proc-date">${fmtD(pr.data)}${clin?' · 🏥 '+clin.nome:''}</div></div><div class="proc-cost">${fmt(pr.custo||0)}</div></div>${pr.nota?`<div class="proc-note">${pr.nota}</div>`:''}<div class="proc-tags">${tags}</div></div>`;
+  }).join('');
+}
+
+function renderClinicaSelector(pt){
+  const el=document.getElementById('clinica-selector');
+  if(!clinicas.length){el.innerHTML='<div style="padding:12px 13px;font-size:.78rem;color:var(--ink4)">Nenhuma clínica. Adicione na aba Clínicas.</div>';return;}
+  const lastClin=(pt.procedimentos||[]).length?(pt.procedimentos[pt.procedimentos.length-1].clinicaId||''):'';
+  el.innerHTML=clinicas.map(c=>`<label class="clinic-opt${lastClin===c.id?' sel':''}"><input type="radio" name="clinica-sel" value="${c.id}"${lastClin===c.id?' checked':''}><div class="clinic-opt-info"><div class="clinic-opt-name">🏥 ${c.nome}</div><div class="clinic-opt-sub">${c.resp||''}${c.cidade?' · '+c.cidade:''}</div></div></label>`).join('');
+  el.querySelectorAll('.clinic-opt').forEach(opt=>{
+    opt.addEventListener('click',()=>{el.querySelectorAll('.clinic-opt').forEach(o=>o.classList.remove('sel'));opt.classList.add('sel');});
+  });
+}
+
+function renderMatSel(){
+  const el=document.getElementById('mat-selector');
+  const cats=[...new Set(MATS.map(m=>m.cat))];
+  el.innerHTML=cats.map(cat=>{
+    const items=materiais.filter(m=>m.cat===cat);
+    return`<div class="sec-label">${cat}</div><div class="mat-grid">${items.map(m=>{const q=selMats[m.id]||0;return`<button class="mat-btn${q>0?' sel':''}" data-id="${m.id}">${q>0?`<span class="mat-qty">${q}</span>`:''}<div class="mat-btn-name">${m.nome}</div><div class="mat-btn-sub">${fmt(cpu(m))}/uso</div></button>`;}).join('')}</div>`;
+  }).join('');
+  el.querySelectorAll('.mat-btn').forEach(b=>b.addEventListener('click',()=>openQty(b.dataset.id)));
+  updateCost();
+}
+
+function updateCost(){
+  const ids=Object.keys(selMats).filter(id=>selMats[id]>0);
+  const pv=document.getElementById('cost-preview');
+  if(!ids.length){pv.style.display='none';return;}
+  let total=0;
+  const items=ids.map(id=>{const m=gm(id);const q=selMats[id];const c=cpu(m)*q;total+=c;return{nome:m.nome.split(' ').slice(0,3).join(' '),q,c};});
+  pv.style.display='block';
+  document.getElementById('cp-total').textContent=fmt(total);
+  document.getElementById('cp-items').innerHTML=items.map(i=>`<div class="cost-item"><span class="cost-item-name">${i.nome}${i.q>1?' ×'+i.q:''}</span><span class="cost-item-val">${fmt(i.c)}</span></div>`).join('');
+}
+document.getElementById('proc-canais').addEventListener('input',updateCost);
+
+function renderDados(pt){
+  const clin=pt.procedimentos&&pt.procedimentos.length&&pt.procedimentos[pt.procedimentos.length-1].clinicaId?gc(pt.procedimentos[pt.procedimentos.length-1].clinicaId):null;
+  document.getElementById('dados-pt-view').innerHTML=`
+    <div class="fg"><label>Nome</label><p style="font-size:.9rem;font-weight:500">${pt.nome}</p></div>
+    ${pt.nasc?`<div class="fg"><label>Nascimento</label><p style="font-size:.88rem">${fmtD(pt.nasc)}</p></div>`:''}
+    ${pt.tel?`<div class="fg"><label>Telefone</label><p style="font-size:.88rem">${pt.tel}</p></div>`:''}
+    ${clin?`<div class="fg"><label>Última clínica</label><p style="font-size:.88rem">🏥 ${clin.nome}</p></div>`:''}
+    ${pt.obs?`<div class="fg"><label>Observações</label><p style="font-size:.82rem;color:var(--ink3)">${pt.obs}</p></div>`:''}
+    <div class="fg"><label>Radiografias</label><p style="font-size:.88rem">${(pt.fotos||[]).length} imagem(ns)</p></div>`;
+}
+
+// FOTOS
+document.querySelectorAll('.ptype-btn').forEach(b=>{
+  b.addEventListener('click',()=>{document.querySelectorAll('.ptype-btn').forEach(x=>x.classList.remove('on'));b.classList.add('on');photoType=b.dataset.type;});
+});
+document.getElementById('btn-add-foto').addEventListener('click',()=>document.getElementById('foto-input').click());
+document.getElementById('foto-input').addEventListener('change',async e=>{
+  const pt=pacientes.find(p=>p.id===curPt);
+  if(!pt.fotos)pt.fotos=[];
+  for(const file of e.target.files){const b64=await toBase64(file);pt.fotos.push({id:uid(),tipo:photoType,data:b64,nome:file.name,date:today()});}
+  sv('eg_pac',pacientes);renderFotos(pt);e.target.value='';
+});
+function toBase64(file){return new Promise(r=>{const rd=new FileReader();rd.onload=e=>r(e.target.result);rd.readAsDataURL(file);})}
+function renderFotos(pt){
+  const el=document.getElementById('photo-grid');
+  const fotos=pt.fotos||[];
+  const grupos={};
+  fotos.forEach(f=>{if(!grupos[f.tipo])grupos[f.tipo]=[];grupos[f.tipo].push(f);});
+  let html='';
+  ['Pré-operatório','Trans-operatório','Pós-operatório','Outro'].forEach(tipo=>{
+    if(grupos[tipo]&&grupos[tipo].length){
+      html+=`<div style="grid-column:1/-1;font-family:'IBM Plex Mono',monospace;font-size:.6rem;letter-spacing:1px;text-transform:uppercase;color:var(--accent2);margin-top:10px;margin-bottom:4px;padding-left:6px;border-left:2px solid var(--accent)">${tipo}</div>`;
+      grupos[tipo].forEach(f=>{html+=`<div><div class="photo-thumb"><img src="${f.data}" alt="${f.tipo}"><button class="photo-del" data-fid="${f.id}">✕</button></div><div class="photo-label">${fmtD(f.date)}</div></div>`;});
+    }
+  });
+  el.innerHTML=html;
+  el.querySelectorAll('.photo-del').forEach(b=>{b.addEventListener('click',()=>{pt.fotos=pt.fotos.filter(f=>f.id!==b.dataset.fid);sv('eg_pac',pacientes);renderFotos(pt);});});
+}
+
+// SALVAR PROCEDIMENTO
+document.getElementById('btn-salvar-proc').addEventListener('click',()=>{
+  const pt=pacientes.find(p=>p.id===curPt);
+  const radioSel=document.querySelector('input[name="clinica-sel"]:checked');
+  const clinicaId=radioSel?radioSel.value:null;
+  const mats=Object.entries(selMats).filter(([,q])=>q>0).map(([id,qty])=>({id,qty}));
+  let custo=0;mats.forEach(({id,qty})=>{const m=gm(id);if(m)custo+=cpu(m)*qty;});
+  const pr={id:uid(),data:document.getElementById('proc-data').value||today(),dente:document.getElementById('proc-dente').value.trim(),canais:parseInt(document.getElementById('proc-canais').value)||1,nota:document.getElementById('proc-nota').value.trim(),mats,custo,clinicaId};
+  if(!pt.procedimentos)pt.procedimentos=[];
+  pt.procedimentos.push(pr);sv('eg_pac',pacientes);
+  selMats={};renderHist(pt);renderMatSel();renderDados(pt);renderPts();showTab('t-hist');
+  showToast('✅ Atendimento registrado! Custo: '+fmt(custo));
+});
+
+// EXCLUIR PACIENTE
+document.getElementById('btn-del-pt').addEventListener('click',()=>{
+  const pt=pacientes.find(p=>p.id===curPt);
+  if(!pt)return;
+  const dlg=document.createElement('div');
+  dlg.style.cssText='position:fixed;inset:0;z-index:9999;background:rgba(14,14,16,.85);display:flex;align-items:center;justify-content:center;padding:24px';
+  dlg.innerHTML=`<div style="background:#fff;border:2px solid #0e0e10;box-shadow:5px 5px 0 #d8dff0;padding:24px;width:100%;max-width:340px"><div style="font-family:'IBM Plex Mono',monospace;font-size:.65rem;letter-spacing:2px;color:#a03030;text-transform:uppercase;margin-bottom:10px">⚠ Confirmar exclusão</div><div style="font-size:.95rem;font-weight:500;margin-bottom:6px">${pt.nome}</div><div style="font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:#7a7a90;margin-bottom:20px">Todos os dados serão apagados permanentemente.</div><div style="display:flex;gap:10px"><button id="dlg-cancel" style="flex:1;padding:11px;background:#f7f7fa;border:1.5px solid #b0b0c8;font-family:'IBM Plex Mono',monospace;font-size:.7rem;letter-spacing:1px;cursor:pointer">CANCELAR</button><button id="dlg-confirm" style="flex:1;padding:11px;background:#a03030;border:1.5px solid #7a1a1a;color:#fff;font-family:'IBM Plex Mono',monospace;font-size:.7rem;letter-spacing:1px;cursor:pointer">EXCLUIR</button></div></div>`;
+  document.body.appendChild(dlg);
+  document.getElementById('dlg-cancel').addEventListener('click',()=>dlg.remove());
+  document.getElementById('dlg-confirm').addEventListener('click',()=>{dlg.remove();pacientes=pacientes.filter(p=>p.id!==curPt);sv('eg_pac',pacientes);closeM('modal-pront');renderPts();});
+});
+
+// GERAR PDF
+document.getElementById('btn-gerar-pdf').addEventListener('click',async()=>{
+  const btn=document.getElementById('btn-gerar-pdf');
+  const orig=btn.innerHTML;btn.innerHTML='⏳ GERANDO...';btn.disabled=true;
+  try{await gerarPDF();}catch(e){showToast('Erro: '+e.message);}
+  finally{btn.innerHTML=orig;btn.disabled=false;}
+});
+
+async function gerarPDF(){
+  const pt=pacientes.find(p=>p.id===curPt);if(!pt)return;
+  const prs=pt.procedimentos||[];
+  const lastClinId=prs.length?prs[prs.length-1].clinicaId:null;
+  const clin=lastClinId?gc(lastClinId):null;
+  const fotos=pt.fotos||[];
+  const hoje=new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
+
+  const procsHTML=prs.map((pr,idx)=>{
+    const cpr=pr.clinicaId?gc(pr.clinicaId):null;
+    const matsStr=(pr.mats||[]).map(m=>{const mat=gm(m.id);return mat?mat.nome+(m.qty>1?' ×'+m.qty:''):m.id;}).join(', ');
+    return`<div class="proc-row"><div class="proc-num">${idx+1}</div><div class="proc-body"><div class="proc-title">Dente ${pr.dente||'—'} · ${pr.canais||'?'} canal(is)</div><div class="proc-meta">${fmtD(pr.data)}${cpr?' · '+cpr.nome:''}</div>${pr.nota?`<div class="proc-note">${pr.nota}</div>`:''} ${matsStr?`<div class="proc-mats"><span class="mats-label">Materiais:</span> ${matsStr}</div>`:''}</div></div>`;
+  }).join('');
+
+  const tiposRx=['Pré-operatório','Trans-operatório','Pós-operatório','Outro'];
+  let fotosHTML='';
+  tiposRx.forEach(tipo=>{
+    const grupo=fotos.filter(f=>f.tipo===tipo);if(!grupo.length)return;
+    fotosHTML+=`<div class="rx-tipo-label">${tipo}</div><div class="rx-grid">`;
+    grupo.forEach(f=>{fotosHTML+=`<div class="rx-item"><img src="${f.data}" alt="${tipo}"><div class="rx-date">${fmtD(f.date)}</div></div>`;});
+    fotosHTML+=`</div>`;
+  });
+
+  const html=`<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Relatório — ${pt.nome}</title><style>@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');*{box-sizing:border-box;margin:0;padding:0}body{font-family:'IBM Plex Sans',sans-serif;background:#fff;color:#0e0e10;font-size:10pt;padding-bottom:80px}@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}.no-print{display:none!important}.page-break{page-break-before:always}}.header{background:#0e0e10;color:#fff;padding:28px 32px 20px}.header-top{display:flex;justify-content:space-between;align-items:flex-start}.header-title{font-family:'IBM Plex Mono',monospace;font-size:22pt;font-weight:500;letter-spacing:4px}.header-title span{color:#8fa0c8}.header-sub{font-family:'IBM Plex Mono',monospace;font-size:7pt;letter-spacing:3px;color:#6376b4;margin-top:4px;text-transform:uppercase}.header-date{font-family:'IBM Plex Mono',monospace;font-size:7.5pt;color:#8fa0c8;text-align:right}.header-bar{height:4px;background:#6376b4;margin-top:20px}.section{margin:20px 32px 0}.section-title{font-family:'IBM Plex Mono',monospace;font-size:7pt;font-weight:500;letter-spacing:3px;text-transform:uppercase;color:#6376b4;border-left:3px solid #6376b4;padding-left:8px;margin-bottom:12px}.patient-block{border:1.5px solid #0e0e10;padding:14px 16px;box-shadow:3px 3px 0 #d8dff0;display:grid;grid-template-columns:1fr 1fr;gap:6px 20px}.field-label{font-family:'IBM Plex Mono',monospace;font-size:6.5pt;color:#6376b4;letter-spacing:1px;text-transform:uppercase;margin-bottom:1px}.field-val{font-size:10pt;font-weight:500}.field-val.big{font-size:13pt;font-weight:600;grid-column:1/-1}.field-obs{font-size:8.5pt;color:#4a4a58;grid-column:1/-1;padding-top:4px;border-top:1px solid #ededf4;margin-top:4px}.clinic-block{background:#eef0f8;border:1.5px solid #6376b4;padding:12px 16px;border-left:5px solid #6376b4;display:grid;grid-template-columns:1fr 1fr;gap:4px 20px}.clinic-name{font-size:12pt;font-weight:600;grid-column:1/-1;margin-bottom:4px}.proc-row{display:flex;align-items:flex-start;gap:12px;padding:10px 12px;border:1px solid #ededf4;margin-bottom:6px;background:#f7f7fa}.proc-row:nth-child(even){background:#fff}.proc-num{width:22px;height:22px;background:#0e0e10;color:#b4c2dc;font-family:'IBM Plex Mono',monospace;font-size:8pt;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}.proc-body{flex:1}.proc-title{font-weight:600;font-size:10pt}.proc-meta{font-family:'IBM Plex Mono',monospace;font-size:7pt;color:#6376b4;margin-top:2px}.proc-note{font-size:8.5pt;color:#2a2a30;margin-top:4px;line-height:1.5;font-style:italic}.proc-mats{font-family:'IBM Plex Mono',monospace;font-size:6.5pt;color:#7a7a90;margin-top:4px}.mats-label{color:#6376b4;font-weight:500}.rx-tipo-label{font-family:'IBM Plex Mono',monospace;font-size:7pt;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:#4a5a96;margin:10px 0 6px;padding-left:8px;border-left:3px solid #b4c2dc}.rx-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px}.rx-item img{width:100%;aspect-ratio:1;object-fit:cover;border:1.5px solid #0e0e10;display:block}.rx-date{font-family:'IBM Plex Mono',monospace;font-size:6pt;color:#7a7a90;text-align:center;margin-top:3px}.footer{margin-top:24px;background:#0e0e10;padding:14px 32px;display:flex;justify-content:space-between;align-items:center;border-top:4px solid #6376b4}.footer-name{font-family:'IBM Plex Mono',monospace;font-size:9pt;color:#fff;font-weight:500}.footer-info{font-family:'IBM Plex Mono',monospace;font-size:7pt;color:#8fa0c8;margin-top:3px}.footer-page{font-family:'IBM Plex Mono',monospace;font-size:7pt;color:#6376b4;text-align:right}.print-bar{position:fixed;bottom:0;left:0;right:0;background:#0e0e10;border-top:3px solid #6376b4;padding:12px 20px;display:flex;gap:10px}.pbtn{flex:1;padding:13px;border:none;cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:.75rem;letter-spacing:2px;text-transform:uppercase}.pbtn.p{background:#6376b4;color:#fff}.pbtn.s{background:transparent;color:#8fa0c8;border:1.5px solid #4a5a96}</style></head><body>
+
+<div class="header"><div class="header-top"><div><div class="header-title">ENDO<span>GESTÃO</span></div><div class="header-sub">Relatório Clínico Endodôntico</div></div><div class="header-date"><div style="font-size:7.5pt;color:#6376b4;margin-bottom:2px">EMITIDO EM</div><div>${hoje}</div></div></div><div class="header-bar"></div></div>
+<div class="section"><div class="section-title">Dados do Paciente</div><div class="patient-block"><div style="grid-column:1/-1"><div class="field-label">Paciente</div><div class="field-val big">${pt.nome}</div></div>${pt.nasc?`<div><div class="field-label">Nascimento</div><div class="field-val">${fmtD(pt.nasc)}</div></div>`:''} ${pt.tel?`<div><div class="field-label">Telefone</div><div class="field-val">${pt.tel}</div></div>`:''} ${pt.obs?`<div class="field-obs"><div class="field-label">Observações</div>${pt.obs}</div>`:''}</div></div>
+${clin?`<div class="section" style="margin-top:16px"><div class="section-title">Clínica Parceira</div><div class="clinic-block"><div class="clinic-name">🏥 ${clin.nome}</div>${clin.resp?`<div><div class="field-label">Responsável</div><div class="field-val">${clin.resp}</div></div>`:''} ${clin.cidade?`<div><div class="field-label">Cidade</div><div class="field-val">${clin.cidade}</div></div>`:''} ${clin.end?`<div style="grid-column:1/-1"><div class="field-label">Endereço</div><div class="field-val">${clin.end}</div></div>`:''} ${clin.tel?`<div><div class="field-label">Telefone</div><div class="field-val">${clin.tel}</div></div>`:''}</div></div>`:''}
+${prs.length?`<div class="section" style="margin-top:16px"><div class="section-title">Histórico de Atendimentos</div>${procsHTML}</div>`:''}
+${fotosHTML?`<div class="section page-break" style="margin-top:20px"><div class="section-title">Radiografias</div>${fotosHTML}</div>`:''}
+<div class="footer" style="margin-bottom:70px"><div><div class="footer-name">${identidade.nome||'Endodontista'}</div><div class="footer-info">${[identidade.esp,identidade.tel,identidade.email].filter(Boolean).join('  ·  ')}</div></div><div class="footer-page">EndoGestão<br>Relatório Clínico</div></div>
+<div class="print-bar no-print"><button class="pbtn p" onclick="window.print()">🖨️ IMPRIMIR / SALVAR PDF</button><button class="pbtn s" onclick="window.close()">✕ FECHAR</button></div>
+</body></html>`;
+
+const pw=window.open(’’,’_blank’);
+if(pw){pw.document.write(html);pw.document.close();pw.onload=()=>pw.print();return;}
+
+// Fallback in-app
+const old=document.getElementById(‘rel-overlay’);if(old)old.remove();
+const ov=document.createElement(‘div’);
+ov.id=‘rel-overlay’;
+ov.style.cssText=‘position:fixed;inset:0;z-index:9999;background:#fff;overflow-y:auto;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column’;
+const tb=document.createElement(‘div’);
+tb.style.cssText=‘position:sticky;top:0;flex-shrink:0;background:#0e0e10;border-bottom:3px solid #6376b4;padding:10px 16px;display:flex;justify-content:space-between;align-items:center’;
+tb.innerHTML=`<span style="font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:#b4c2dc;letter-spacing:2px">RELATÓRIO CLÍNICO</span><button id="btn-fechar-rel" style="background:transparent;border:1.5px solid #6376b4;color:#8fa0c8;padding:7px 14px;cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:.65rem;letter-spacing:1px">✕ FECHAR</button>`;
+const bd=document.createElement(‘div’);
+bd.style.cssText=‘flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:20px’;
+bd.innerHTML=html;
+const tip=document.createElement(‘div’);
+tip.style.cssText=‘background:#eef0f8;border-top:2px solid #6376b4;padding:12px 16px;font-family:IBM Plex Mono,monospace;font-size:.65rem;color:#4a5a96;letter-spacing:.5px;line-height:1.6;flex-shrink:0’;
+tip.textContent=‘Para salvar como PDF no iPhone: Safari → botão compartilhar (□↑) → Imprimir → pellizcar a pré-visualização com dois dedos → compartilhar → Salvar em Arquivos.’;
+ov.appendChild(tb);ov.appendChild(bd);ov.appendChild(tip);
+document.body.appendChild(ov);
+document.getElementById(‘btn-fechar-rel’).addEventListener(‘click’,()=>ov.remove());
+}
+
+// IDENTIFICAÇÃO
+function openIdent(){
+document.getElementById(‘id-nome’).value=identidade.nome||’’;
+document.getElementById(‘id-esp’).value=identidade.esp||’’;
+document.getElementById(‘id-tel’).value=identidade.tel||’’;
+document.getElementById(‘id-email’).value=identidade.email||’’;
+openM(‘modal-ident’);
+}
+document.getElementById(‘btn-salvar-ident’).addEventListener(‘click’,()=>{
+identidade={nome:document.getElementById(‘id-nome’).value,esp:document.getElementById(‘id-esp’).value,tel:document.getElementById(‘id-tel’).value,email:document.getElementById(‘id-email’).value};
+sv(‘eg_ident’,identidade);closeM(‘modal-ident’);showToast(‘✅ Identificação salva!’);
+});
+
+// QTY
+function openQty(id){
+qtyTarget=id;const m=gm(id);
+document.getElementById(‘qty-nome’).textContent=m.nome;
+document.getElementById(‘qty-info’).textContent=`${fmt(cpu(m))} por uso · ${m.obs}`;
+document.getElementById(‘qty-disp’).textContent=selMats[id]||1;
+openM(‘modal-qty’);
+}
+document.getElementById(‘qty-dec’).addEventListener(‘click’,()=>{const v=parseInt(document.getElementById(‘qty-disp’).textContent);document.getElementById(‘qty-disp’).textContent=Math.max(0,v-1);});
+document.getElementById(‘qty-inc’).addEventListener(‘click’,()=>{const v=parseInt(document.getElementById(‘qty-disp’).textContent);document.getElementById(‘qty-disp’).textContent=v+1;});
+document.getElementById(‘btn-confirm-qty’).addEventListener(‘click’,()=>{
+const q=parseInt(document.getElementById(‘qty-disp’).textContent);
+if(q===0)delete selMats[qtyTarget];else selMats[qtyTarget]=q;
+closeM(‘modal-qty’);renderMatSel();
+});
+
+// MAT DB
+function renderMatDB(){
+const cats=[…new Set(materiais.map(m=>m.cat))];
+document.getElementById(‘mat-db-list’).innerHTML=cats.map(cat=>{
+const items=materiais.filter(m=>m.cat===cat);
+return`<div class="sec-label">${cat}</div>${items.map(m=>`<div class="mat-db-item"><div class="mat-db-left"><div class="mat-db-name">${m.nome}</div><div class="mat-db-meta">${m.usos} uso(s)/unid · Custo/uso: <strong>${fmt(cpu(m))}</strong> · ${m.obs}</div></div><div><label style="font-size:.58rem;margin-bottom:2px;text-align:right;display:block">R$/unid</label><input class="price-input" type="number" step="0.01" min="0" value="${m.preco.toFixed(2)}" data-id="${m.id}"></div></div>`).join('')}`;
+}).join(’’);
+document.querySelectorAll(’.price-input’).forEach(inp=>{
+inp.addEventListener(‘change’,e=>{const m=materiais.find(x=>x.id===e.target.dataset.id);if(m){m.preco=parseFloat(e.target.value)||0;sv(‘eg_mat’,materiais);}renderMatDB();});
+});
+}
+
+// RELATÓRIO
+function renderRel(){
+let tp=pacientes.length,tc=0,tcu=0;
+pacientes.forEach(p=>(p.procedimentos||[]).forEach(pr=>{tc++;tcu+=pr.custo||0;}));
+document.getElementById(‘stats-grid’).innerHTML=`<div class="stat-card"><div class="stat-val">${tp}</div><div class="stat-lbl">Pacientes</div></div><div class="stat-card"><div class="stat-val">${tc}</div><div class="stat-lbl">Atendimentos</div></div><div class="stat-card"><div class="stat-val" style="font-size:1.1rem">${fmt(tcu)}</div><div class="stat-lbl">Custo Total</div></div><div class="stat-card"><div class="stat-val" style="font-size:1.1rem">${tc?fmt(tcu/tc):'R$ 0,00'}</div><div class="stat-lbl">Custo Médio</div></div>`;
+let all=[];
+pacientes.forEach(p=>(p.procedimentos||[]).forEach(pr=>all.push({…pr,ptNome:p.nome})));
+all.sort((a,b)=>b.data.localeCompare(a.data));
+document.getElementById(‘recent-procs’).innerHTML=all.slice(0,10).map(pr=>`<div class="proc-card"><div class="proc-hd"><div><div style="font-weight:600;font-size:.82rem">${pr.ptNome}</div><div class="proc-date">🦷 Dente ${pr.dente||'—'} · ${fmtD(pr.data)}</div></div><div class="proc-cost">${fmt(pr.custo||0)}</div></div>${pr.nota?`<div class="proc-note" style="margin-top:4px">${pr.nota}</div>`:''}</div>`).join(’’)||’<div class="empty-state"><div class="ei">📊</div><p>Nenhum atendimento ainda</p></div>’;
+}
+
+// TOAST (substitui alert())
+function showToast(msg){
+const t=document.createElement(‘div’);
+t.style.cssText=‘position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#0e0e10;color:#b4c2dc;padding:10px 18px;font-family:IBM Plex Mono,monospace;font-size:.72rem;letter-spacing:.5px;z-index:9998;border:1.5px solid #6376b4;max-width:90%;text-align:center’;
+t.textContent=msg;document.body.appendChild(t);
+setTimeout(()=>t.remove(),3000);
+}
+
+// TABS & MODALS
+function showTab(id){
+[‘t-hist’,‘t-proc’,‘t-fotos’,‘t-dados’].forEach(t=>{document.getElementById(t).style.display=t===id?‘block’:‘none’;});
+document.querySelectorAll(’.tab’).forEach(t=>{t.classList.toggle(‘on’,t.dataset.tab===id);});
+}
+document.querySelectorAll(’.tab’).forEach(t=>t.addEventListener(‘click’,()=>showTab(t.dataset.tab)));
+function openM(id){document.getElementById(id).classList.add(‘on’)}
+function closeM(id){document.getElementById(id).classList.remove(‘on’)}
+document.querySelectorAll(’[data-close]’).forEach(b=>b.addEventListener(‘click’,()=>closeM(b.dataset.close)));
+document.querySelectorAll(’.overlay’).forEach(ov=>ov.addEventListener(‘click’,e=>{if(e.target===ov)closeM(ov.id);}));
+</script>
+
+</body>
+</html>
